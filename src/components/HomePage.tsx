@@ -1,85 +1,109 @@
-import React, { FC } from "react";
-import {
-  alpha,
-  Box,
-  Button,
-  InputBase,
-  styled,
-  Typography,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import React, { FC, useState, useEffect } from "react";
+import { Pagination, Stack, Typography } from "@mui/material";
+import Header from "./Header";
+import axios from "axios";
+import styled from "styled-components";
+import theme from "../theme";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-  border: `1px solid ${alpha(theme.palette.primary.main, 0.4)}`,
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
+const ListItem = styled.div`
+  padding: 0.75rem 0;
+  height: 96px;
+  border-bottom: 1px solid ${theme.colors.secondary};
+`;
+const ListItemDescription = styled.div`
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`;
 
 const HomePage: FC = () => {
+  const [companies, setCompanies] = useState([]);
+  const [companiesCount, setCompaniesCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get("http://localhost:8080/company/count");
+      setCompaniesCount(data);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get("http://localhost:8080/company", {
+        params: {
+          take: itemsPerPage,
+          skip: (page - 1) * itemsPerPage,
+          orderBy: {
+            posts: {
+              _count: "desc",
+            },
+          },
+          include: {
+            _count: "employees",
+          },
+        },
+      });
+      console.log(data);
+      setCompanies(data);
+    })();
+  }, [page]);
+
   return (
-    <Box>
-      <Box
-        sx={{
-          padding: "0.5em 1em",
-          boxShadow: 1,
+    <div>
+      <Header />
+      <div
+        style={{
+          maxWidth: 1280,
+          height: 1096,
           display: "flex",
-          alignItems: "center",
+          flexDirection: "column",
           justifyContent: "space-between",
-          gap: "0.5em",
+          paddingTop: "64px",
+          margin: "0 auto",
         }}
       >
-        <Typography sx={{ color: "primary.main", fontSize: 32 }}>
-          upfirm
-        </Typography>
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
-        <Button color="primary" variant="contained">
-          Login
-        </Button>
-      </Box>
-      <div></div>
-    </Box>
+        <div>
+          {companies.map((company: any) => {
+            return (
+              <ListItem key={company.id}>
+                <Typography variant="h5">{company.name}</Typography>
+                <p>
+                  {company.city}
+                  {` - `}
+                  {company.country}
+                  {` --- employees: `}
+                  {company._count.employees}
+                  {` --- posts: `}
+                  {company._count.posts}
+                </p>
+                <ListItemDescription>{company.description}</ListItemDescription>
+              </ListItem>
+            );
+          })}
+        </div>
+        <div
+          style={{
+            padding: "1em",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Stack spacing={2}>
+            <Pagination
+              count={Math.ceil(companiesCount / itemsPerPage)}
+              color="primary"
+              onChange={(e, page) => {
+                setPage(page);
+              }}
+            />
+          </Stack>
+        </div>
+      </div>
+    </div>
   );
 };
 
