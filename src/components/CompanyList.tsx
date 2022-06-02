@@ -3,24 +3,22 @@ import { Pagination, Typography } from "@mui/material";
 import styled from "styled-components";
 import theme from "../theme";
 import { companyCount, companyList } from "../api/backend";
+import { Link } from "react-router-dom";
 
 const List = styled.div`
-  max-width: 1280px;
-  height: 1096px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 64px;
-  margin: 0 auto;
-  @media screen and (max-width: 600px) {
-    padding: 64px 8px;
-  }
 `;
 
 const ListItem = styled.div`
-  padding: 8px 0 16px 0;
+  padding: 8px 0 16px 8px;
   height: 96px;
-  border-bottom: 1px solid ${theme.colors.secondary};
+  color: black;
+  border-bottom: 2px solid ${theme.colors.secondary};
+  :hover {
+    background-color: rgb(245, 245, 245);
+  }
 `;
 const ListItemDescription = styled.div`
   overflow: hidden;
@@ -40,7 +38,7 @@ const CompanyList = () => {
     (async () => {
       setCompaniesCount(await companyCount());
     })();
-  }, []);
+  });
 
   useEffect(() => {
     (async () => {
@@ -65,10 +63,10 @@ const CompanyList = () => {
 
   return (
     <List>
-      <div>
-        {companies.map((company: any) => {
-          return (
-            <ListItem key={company.id}>
+      {companies.map((company: any) => {
+        return (
+          <Link to={`company/${company.id}/discussion`} key={company.id}>
+            <ListItem>
               <Typography variant="h6" sx={{ fontWeight: "500" }}>
                 {company.name}
               </Typography>
@@ -83,9 +81,10 @@ const CompanyList = () => {
               </p>
               <ListItemDescription>{company.description}</ListItemDescription>
             </ListItem>
-          );
-        })}
-      </div>
+          </Link>
+        );
+      })}
+
       <div
         style={{
           display: "flex",
