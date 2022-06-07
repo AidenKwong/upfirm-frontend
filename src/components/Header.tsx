@@ -1,8 +1,24 @@
-import { Box, Button, Typography } from "@mui/material";
-import { FC } from "react";
+import { Box, Button, Modal, Typography } from "@mui/material";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 const Header: FC = () => {
+  const [modal, setModal] = useState(false);
+  const handleOpen = () => setModal(true);
+  const handleClose = () => setModal(false);
+
   return (
     <Box
       sx={{
@@ -32,9 +48,17 @@ const Header: FC = () => {
           </Typography>
         </Link>
 
-        <Button color="secondary" variant="contained" size="small">
+        <Button
+          color="secondary"
+          variant="contained"
+          size="small"
+          onClick={handleOpen}
+        >
           Login
         </Button>
+        <Modal open={modal} onClose={handleClose}>
+          <Box sx={style}>123</Box>
+        </Modal>
       </Box>
     </Box>
   );

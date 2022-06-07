@@ -12,7 +12,6 @@ const HeaderPadding = styled.div`
 
 const MainContainer = styled.div`
   max-width: 1280px;
-  height: 1096px;
   margin: 0 auto;
   @media screen and (max-width: 600px) {
     padding: 0px 4px;

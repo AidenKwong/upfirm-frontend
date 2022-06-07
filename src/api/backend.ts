@@ -28,3 +28,8 @@ export const findJobs = async (params: any) => {
   const response = await backendApi.get("/job", params);
   return response.data;
 };
+
+export const findPost = async (id: number) => {
+  const response = await backendApi.get(`/post/id/${id}`);
+  return response.data;
+};

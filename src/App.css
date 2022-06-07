@@ -3,11 +3,12 @@
 }
 
 body {
-  background-color: rgb(245, 245, 245);
+  background-color: rgb(240, 240, 240);
 }
 
 a:link {
   text-decoration: none;
+  color: black;
 }
 
 a:visited {

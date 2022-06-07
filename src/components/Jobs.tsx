@@ -10,7 +10,6 @@ const List = styled.div`
 `;
 
 const Job = styled.div`
-  padding: 8px 0 16px 0px;
   background-color: white;
   margin-bottom: 8px;
   padding: 8px;
@@ -65,6 +64,7 @@ const Jobs = () => {
                 {` --- `}
                 {new Date(job.endDate).toLocaleDateString()}
               </p>
+              <p>{`job.rating`}</p>
               <p>{job.description}</p>
             </Job>
           );

@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import React, { useEffect, useState, CSSProperties } from "react";
-import { useParams } from "react-router-dom";
-import { findCompanyById } from "../api/backend";
+import { Link, useParams } from "react-router-dom";
+import { companyList, findCompanyById } from "../api/backend";
 import styled from "styled-components";
 import SpaceBetween from "../styled-components/SpaceBetween";
 import { NavLink, Routes, Route } from "react-router-dom";
@@ -29,9 +29,32 @@ const MainContainer = styled.div`
 `;
 
 const RelatedCompanies = styled.div`
+  padding: 8px;
+  height: min-content;
+  background-color: white;
+  flex-shrink: 2;
+  width: 380px;
   @media screen and (max-width: 600px) {
     display: none;
   }
+`;
+
+const RelatedCompany = styled.div`
+  padding: 8px 0 16px 8px;
+  height: 96px;
+  color: black;
+  border-bottom: 2px solid ${theme.colors.secondary};
+  :hover {
+    background-color: rgb(240, 240, 240);
+  }
+`;
+
+const RelatedCompaniesDescription = styled.div`
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
 `;
 
 const isActiveStyle: CSSProperties = {
@@ -39,9 +62,30 @@ const isActiveStyle: CSSProperties = {
   borderBottom: `2px solid ${theme.colors.primary}`,
 };
 
+function shuffle(array: Array<any>) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex !== 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
+
 const CompanyPage = () => {
   const { id } = useParams()!;
   const [company, setCompany] = useState<any>();
+  const [relatedCompanies, setRelatedCompanies] = useState<Array<any>>([]);
 
   useEffect(() => {
     (async () => {
@@ -49,6 +93,25 @@ const CompanyPage = () => {
       setCompany(data);
     })();
   }, [id]);
+
+  useEffect(() => {
+    company &&
+      (async () => {
+        const params = {
+          params: {
+            take: 5,
+            skip: 0,
+            where: {
+              industryId: company.industryId,
+            },
+          },
+        };
+        const data = await companyList(params);
+        setRelatedCompanies(
+          shuffle(data.filter((c: any) => c.id !== company.id))
+        );
+      })();
+  }, [company]);
 
   return (
     <div>
@@ -103,12 +166,38 @@ const CompanyPage = () => {
             </div>
           </CompanyInfo>
           <MainContainer>
-            <Routes>
-              <Route path="discussion" element={<Posts />} />
-              <Route path="jobs" element={<Jobs />} />
-            </Routes>
+            <div style={{ width: 900 }}>
+              <Routes>
+                <Route path="discussion" element={<Posts />} />
+                <Route path="jobs" element={<Jobs />} />
+              </Routes>
+            </div>
 
-            <RelatedCompanies>123</RelatedCompanies>
+            <RelatedCompanies>
+              <Typography variant="h6">Related companies</Typography>
+              {relatedCompanies.map((company: any) => {
+                return (
+                  <Link
+                    to={`/company/${company.id}/discussion`}
+                    key={company.id}
+                  >
+                    <RelatedCompany>
+                      <Typography variant="h6" key={company.id}>
+                        {company.name}
+                      </Typography>
+                      <p>
+                        {company.city}
+                        {` - `}
+                        {company.country}
+                      </p>
+                      <RelatedCompaniesDescription>
+                        {company.description}
+                      </RelatedCompaniesDescription>
+                    </RelatedCompany>
+                  </Link>
+                );
+              })}
+            </RelatedCompanies>
           </MainContainer>
         </>
       )}

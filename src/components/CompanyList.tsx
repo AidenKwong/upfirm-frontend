@@ -9,12 +9,13 @@ const List = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: calc(100vh - 64px);
+  background-color: white;
 `;
 
 const ListItem = styled.div`
   padding: 8px 0 16px 8px;
   height: 96px;
-  color: black;
   border-bottom: 2px solid ${theme.colors.secondary};
   :hover {
     background-color: rgb(245, 245, 245);
@@ -63,27 +64,29 @@ const CompanyList = () => {
 
   return (
     <List>
-      {companies.map((company: any) => {
-        return (
-          <Link to={`company/${company.id}/discussion`} key={company.id}>
-            <ListItem>
-              <Typography variant="h6" sx={{ fontWeight: "500" }}>
-                {company.name}
-              </Typography>
-              <p>
-                {company.city}
-                {` - `}
-                {company.country}
-                {` --- employees: `}
-                {company._count.employees}
-                {` --- posts: `}
-                {company._count.posts}
-              </p>
-              <ListItemDescription>{company.description}</ListItemDescription>
-            </ListItem>
-          </Link>
-        );
-      })}
+      <div>
+        {companies.map((company: any) => {
+          return (
+            <Link to={`/company/${company.id}/discussion`} key={company.id}>
+              <ListItem>
+                <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                  {company.name}
+                </Typography>
+                <p>
+                  {company.city}
+                  {` - `}
+                  {company.country}
+                  {` --- employees: `}
+                  {company._count.employees}
+                  {` --- posts: `}
+                  {company._count.posts}
+                </p>
+                <ListItemDescription>{company.description}</ListItemDescription>
+              </ListItem>
+            </Link>
+          );
+        })}
+      </div>
 
       <div
         style={{
