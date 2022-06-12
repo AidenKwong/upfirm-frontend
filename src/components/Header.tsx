@@ -1,53 +1,78 @@
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Button, Modal, Typography, TextField } from "@mui/material";
 import { FC, useState } from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+import theme from "../theme";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+const Main = styled.div`
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+  background-color: ${theme.palette.primary.main};
+  height: 52px;
+
+  @media screen and (max-width: 600px) {
+    height: 44px;
+  }
+`;
+
+const MainContent = styled.div`
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-grow: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @media screen and (max-width: 600px) {
+    padding: 0px 4px;
+  }
+`;
+
+const ModalBox = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 300px;
+  border: 1px solid ${theme.palette.primary.light};
+  @media screen and (max-width: 600px) {
+    width: 80%;
+  }
+`;
+
+const RegisterLink = styled.p`
+  color: ${theme.palette.primary.main};
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  &:hover {
+    color: ${theme.palette.primary.dark};
+  }
+`;
 
 const Header: FC = () => {
   const [modal, setModal] = useState(false);
   const handleOpen = () => setModal(true);
   const handleClose = () => setModal(false);
+  const [isLogin, setIsLogin] = useState<Boolean>(true);
 
   return (
-    <Box
-      sx={{
-        boxShadow: 1,
-        position: "fixed",
-        top: 0,
-        width: "100%",
-        zIndex: 100,
-        backgroundColor: "primary.main",
-        height: [44, 52],
-      }}
-    >
-      <Box
-        sx={{
-          padding: ["0px 16px", "2px 16px"],
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "0.5em",
-          maxWidth: 1280,
-          margin: "0 auto",
-        }}
-      >
+    <Main>
+      <MainContent>
         <Link to="/">
           <Typography sx={{ color: "white", fontSize: [30, 32] }}>
             upfirm
           </Typography>
         </Link>
-
         <Button
           color="secondary"
           variant="contained"
@@ -56,11 +81,26 @@ const Header: FC = () => {
         >
           Login
         </Button>
-        <Modal open={modal} onClose={handleClose}>
-          <Box sx={style}>123</Box>
-        </Modal>
-      </Box>
-    </Box>
+      </MainContent>
+
+      <Modal open={modal} onClose={handleClose}>
+        {isLogin ? (
+          <ModalBox>
+            <Login />
+            <RegisterLink onClick={() => setIsLogin(false)}>
+              Don't have account? Click here to register.
+            </RegisterLink>
+          </ModalBox>
+        ) : (
+          <ModalBox>
+            <Register />
+            <RegisterLink onClick={() => setIsLogin(true)}>
+              Already have account? Click here to log in.
+            </RegisterLink>
+          </ModalBox>
+        )}
+      </Modal>
+    </Main>
   );
 };
 

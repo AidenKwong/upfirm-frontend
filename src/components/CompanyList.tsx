@@ -9,17 +9,18 @@ const List = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100vh - 64px);
+
   background-color: white;
 `;
 
 const ListItem = styled.div`
   padding: 8px 0 16px 8px;
   height: 96px;
-  border-bottom: 2px solid ${theme.colors.secondary};
+  border-bottom: 2px solid ${theme.palette.secondary.light};
   :hover {
     background-color: rgb(245, 245, 245);
   }
+  transition: all 0.2s ease-in-out;
 `;
 const ListItemDescription = styled.div`
   overflow: hidden;
@@ -33,7 +34,7 @@ const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
   const [companiesCount, setCompaniesCount] = useState(0);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 11;
 
   useEffect(() => {
     (async () => {

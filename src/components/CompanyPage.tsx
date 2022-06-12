@@ -11,7 +11,7 @@ import Jobs from "./Jobs";
 
 const CompanyInfo = styled.div`
   background-color: white;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   padding: 8px;
 `;
 
@@ -43,10 +43,11 @@ const RelatedCompany = styled.div`
   padding: 8px 0 16px 8px;
   height: 96px;
   color: black;
-  border-bottom: 2px solid ${theme.colors.secondary};
+  border-bottom: 2px solid ${theme.palette.secondary.main};
   :hover {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(245, 245, 245);
   }
+  transition: all 0.2s ease-in-out;
 `;
 
 const RelatedCompaniesDescription = styled.div`
@@ -58,8 +59,8 @@ const RelatedCompaniesDescription = styled.div`
 `;
 
 const isActiveStyle: CSSProperties = {
-  color: theme.colors.primary,
-  borderBottom: `2px solid ${theme.colors.primary}`,
+  color: theme.palette.primary.main,
+  borderBottom: `2px solid ${theme.palette.primary.main}`,
 };
 
 function shuffle(array: Array<any>) {

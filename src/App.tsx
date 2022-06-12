@@ -1,8 +1,9 @@
-import React, { FC } from "react";
-import { createTheme, responsiveFontSizes, ThemeProvider } from "@mui/material/styles";
-
+import React, { FC, useState, createContext } from "react";
+import theme from "./theme";
 import "./App.css";
 import HomePage from "./components/HomePage";
+import { ThemeProvider } from "@mui/material/styles";
+import { login } from "./api/backend";
 
 declare module "@mui/material/styles" {
   export interface ThemeOptions {
@@ -12,26 +13,22 @@ declare module "@mui/material/styles" {
   }
 }
 
-let theme = createTheme({
-  palette: {
-    primary: {
-      main: "#337def"
-    },
-    secondary: {
-      main: "#fcc729"
-    }
-  }
-});
-
-theme = responsiveFontSizes(theme);
-
 const App: FC = () => {
+  if (localStorage.getItem("upfirm_ac_token")) {
+    (async () => {})();
+  }
+
+  const [account, setAccount] = useState(null);
+  const AccountContext = createContext([account, setAccount]);
+
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <HomePage />
-      </div>
-    </ThemeProvider>
+    <AccountContext.Provider value={[account, setAccount]}>
+      <ThemeProvider theme={theme}>
+        <div className="App">
+          <HomePage />
+        </div>
+      </ThemeProvider>
+    </AccountContext.Provider>
   );
 };
 

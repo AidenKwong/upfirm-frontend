@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const backendApi = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL,
@@ -32,4 +32,12 @@ export const findJobs = async (params: any) => {
 export const findPost = async (id: number) => {
   const response = await backendApi.get(`/post/id/${id}`);
   return response.data;
+};
+
+export const register = async (params: any) => {
+  return await backendApi.post("/user", params);
+};
+
+export const login = async (params: any) => {
+  return await backendApi.post("/auth/login", params);
 };

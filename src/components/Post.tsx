@@ -4,7 +4,14 @@ import React, { useState } from "react";
 import SpaceBetween from "../styled-components/SpaceBetween";
 import styled from "styled-components";
 import { MdOutlineThumbDownAlt, MdOutlineThumbUpAlt } from "react-icons/md";
-import Paper from "@mui/material/Paper";
+import theme from "../theme";
+
+const Main = styled.div`
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: white;
+  border-radius: 8px;
+`;
 
 const LikeDislikes = styled.div`
   display: flex;
@@ -30,7 +37,7 @@ const Post = ({ post }: any) => {
   const [commentList, setCommentList] = useState<Array<any>>([]);
 
   return (
-    <Paper sx={{ padding: "8px", marginBottom: "8px" }}>
+    <Main>
       <SpaceBetween>
         <p>{post.author.username}</p>
         <p style={{ fontSize: "14px" }}>{moment(post.createdAt).fromNow()}</p>
@@ -101,7 +108,7 @@ const Post = ({ post }: any) => {
             </CommentButton>
           )}
       </div>
-    </Paper>
+    </Main>
   );
 };
 
